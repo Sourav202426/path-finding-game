@@ -72,7 +72,16 @@ class Node:
             self.neighbors.append(grid[self.row][self.col + 1])
         if self.col > 0 and not grid[self.row][self.col - 1].is_barrier(): 
             self.neighbors.append(grid[self.row][self.col - 1])
-
+# Initialize the grid
+def make_grid(rows, width):
+    grid = []
+    gap = width// rows
+    for i in range(rows):
+        grid.append([])
+        for j in range(rows):
+            node = Node(i, j, gap, rows)
+            grid[i].append(node)
+    return grid
 # Heuristic function 
 def h(p1, p2):
     x1, y1 = p1
@@ -123,18 +132,9 @@ def reconstruct_path(came_from, current, draw, start):
         current = came_from[current]
         if current != start:  # Skip recoloring the start node
             current.make_path()
-        draw()
+            draw()  # Update the display to show the path
+            pygame.time.delay(50)  # Delay in milliseconds (50ms delay between each step of the path)
 
-# Initialize the grid
-def make_grid(rows, width):
-    grid = []
-    gap = width// rows
-    for i in range(rows):
-        grid.append([])
-        for j in range(rows):
-            node = Node(i, j, gap, rows)
-            grid[i].append(node)
-    return grid
 
 # Draw the grid lines
 def draw_grid(win, rows, width):
