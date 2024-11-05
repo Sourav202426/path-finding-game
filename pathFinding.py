@@ -1,4 +1,3 @@
-#Path Finding Game using A* Algorithm
 import pygame
 import heapq
 import math
@@ -6,21 +5,18 @@ import math
 # Window width
 width = 500
 rows = 10
-# Color definitions for nodes and barriers 
-# White - Initial state of all nodes and  unvisited state .
-# Orange - start node .
-# Purple - end (or goal) node.
+# Color definitions for nodes and barriers
+# White - Initial state of all nodes and unvisited state.
+# Orange - Start node.
+# Purple - End (or goal) node.
 # Black - Represents barriers.
-# Green - Used to mark open nodes that are actively being considered in the algorithm.
-# Red - Marks closed nodes and it  will not be revisited.
-# Blue -  final path from the start node to the end node once the shortest path is found.
+# Blue - Final path from the start node to the end node once the shortest path is found.
 white = (255, 255, 255)
 black = (0, 0, 0)
-green = (0, 255, 0)
-red = (255, 0, 0)
 blue = (0, 0, 255)
 purple = (128, 0, 128)
-orange = (255,165,0)
+orange = (255, 165, 0)
+
 # Define the Node class for each cell in the grid
 class Node:
     def __init__(self, row, col, width, total_rows):
@@ -32,38 +28,34 @@ class Node:
         self.neighbors = []
         self.width = width
         self.total_rows = total_rows
-    #Returns the node's position (row, column).
+        
+    # Returns the node's position (row, column).
     def get_pos(self):
         return self.row, self.col
-    #Check the node is in a specific state.
-    def is_closed(self):
-        return self.color == red
-    def is_open(self):
-        return self.color == green
+    
+    # Check the node is in a specific state.
     def is_barrier(self):
         return self.color == black
     def is_start(self):
         return self.color == orange
     def is_end(self):
-        return self.color ==  purple
-    #Change the color and state of the node.
+        return self.color == purple
+    
+    # Change the color and state of the node.
     def reset(self):
         self.color = white
     def make_start(self):
         self.color = orange
-    def make_closed(self):
-        self.color = red
-    def make_open(self):
-        self.color = green
     def make_barrier(self):
         self.color = black
     def make_end(self):
-        self.color =  purple
+        self.color = purple
     def make_path(self):
         self.color = blue
 
-    def draw(self, win):#Draws the node as a rectangle on the screen.
+    def draw(self, win):  # Draws the node as a rectangle on the screen.
         pygame.draw.rect(win, self.color, (self.x, self.y, self.width, self.width))
+    
     # Add neighboring nodes (down, up, right, left) if they are within bounds and not barriers
     def update_neighbors(self, grid):
         self.neighbors = []
@@ -75,16 +67,18 @@ class Node:
             self.neighbors.append(grid[self.row][self.col + 1])
         if self.col > 0 and not grid[self.row][self.col - 1].is_barrier(): 
             self.neighbors.append(grid[self.row][self.col - 1])
+
 # Initialize the grid
 def make_grid(rows, width):
     grid = []
-    gap = width// rows
+    gap = width // rows
     for i in range(rows):
         grid.append([])
         for j in range(rows):
             node = Node(i, j, gap, rows)
             grid[i].append(node)
     return grid
+
 # Heuristic function 
 def h(p1, p2):
     x1, y1 = p1
@@ -122,11 +116,8 @@ def a_star_algorithm(draw, grid, start, end):
                 if neighbor not in open_set_hash:
                     count += 1
                     heapq.heappush(open_set, (f_score[neighbor], count, neighbor))
-                    open_set_hash.add(neighbor)
-                    neighbor.make_open()             
+                    open_set_hash.add(neighbor)             
         draw()
-        if current != start:
-            current.make_closed()      
     return False
 
 # Function to reconstruct path after finding the solution
@@ -137,7 +128,6 @@ def reconstruct_path(came_from, current, draw, start):
             current.make_path()
             draw() 
             pygame.time.delay(50)  
-
 
 # Draw the grid lines
 def draw(win, grid, rows, width):
