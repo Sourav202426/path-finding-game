@@ -4,7 +4,7 @@ import heapq
 import math
 
 # Window width
-width = 400 
+width = 500
 rows = 10
 # Color definitions for nodes and barriers 
 # White - Initial state of all nodes and  unvisited state .
@@ -32,8 +32,10 @@ class Node:
         self.neighbors = []
         self.width = width
         self.total_rows = total_rows
+    #Returns the node's position (row, column).
     def get_pos(self):
         return self.row, self.col
+    #Check the node is in a specific state.
     def is_closed(self):
         return self.color == red
     def is_open(self):
@@ -44,6 +46,7 @@ class Node:
         return self.color == orange
     def is_end(self):
         return self.color ==  purple
+    #Change the color and state of the node.
     def reset(self):
         self.color = white
     def make_start(self):
@@ -59,7 +62,7 @@ class Node:
     def make_path(self):
         self.color = blue
 
-    def draw(self, win):
+    def draw(self, win):#Draws the node as a rectangle on the screen.
         pygame.draw.rect(win, self.color, (self.x, self.y, self.width, self.width))
     # Add neighboring nodes (down, up, right, left) if they are within bounds and not barriers
     def update_neighbors(self, grid):
@@ -130,27 +133,23 @@ def a_star_algorithm(draw, grid, start, end):
 def reconstruct_path(came_from, current, draw, start):
     while current in came_from:
         current = came_from[current]
-        if current != start:  # Skip recoloring the start node
+        if current != start: 
             current.make_path()
-            draw()  # Update the display to show the path
-            pygame.time.delay(50)  # Delay in milliseconds (50ms delay between each step of the path)
+            draw() 
+            pygame.time.delay(50)  
 
 
 # Draw the grid lines
-def draw_grid(win, rows, width):
-    gap = width // rows
-    for i in range(rows):
-        pygame.draw.line(win, black, (0, i * gap), (width, i * gap))
-        for j in range(rows):
-            pygame.draw.line(win, black, (j * gap, 0), (j * gap, width))
-
-# Main draw function
 def draw(win, grid, rows, width):
     win.fill(white)
     for row in grid:
         for node in row:
             node.draw(win)
-    draw_grid(win, rows, width)
+    gap = width // rows
+    for i in range(rows):
+        pygame.draw.line(win, black, (0, i * gap), (width, i * gap))
+        for j in range(rows):
+            pygame.draw.line(win, black, (j * gap, 0), (j * gap, width))
     pygame.display.update()
 
 # Get the mouse position on the grid
